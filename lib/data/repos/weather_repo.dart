@@ -28,6 +28,7 @@ class WeatherRepository {
   Future<bool> saveWeathertoDb(Map<String, dynamic> weatherData) async {
     try {
       dio.interceptors.add(PrettyDioLogger());
+      weatherData['user'] = AuthRepo.currentUser['_id'];
 
       final response = await dio.post('${AuthRepo.baseUrl}/weather/saveWeather',
           data: weatherData);
@@ -45,7 +46,12 @@ class WeatherRepository {
   Future<bool> getSavedWeather() async {
     try {
       dio.interceptors.add(PrettyDioLogger());
-      final response = await dio.get('${AuthRepo.baseUrl}/weather/getweather');
+      final response = await dio.get('${AuthRepo.baseUrl}/weather/getweather',
+          data: {"user": AuthRepo.currentUser["_id"]},
+          options: Options(headers: {
+            "auth-token": AuthRepo.token,
+            "userid": AuthRepo.currentUser["userid"]
+          }));
       if (response.data['success'] == true) {
         savedWeather = response.data['data'];
         return true;

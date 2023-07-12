@@ -25,6 +25,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     });
     on<SaveWeatherEvent>((event, emit) async {
       print('Save Weather Event');
+
       emit(WeatherSavingState());
       bool saved = await weatherRepository.saveWeathertoDb(event.weatherData);
       if (saved) {
