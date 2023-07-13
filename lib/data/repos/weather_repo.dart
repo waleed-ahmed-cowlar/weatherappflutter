@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:weatherapp/data/api/api.dart';
+import 'package:weatherapp/data/local_db/sql_helper.dart';
 import 'package:weatherapp/data/repos/auth_repo.dart';
 
 class WeatherRepository {
   final Api _api = Api();
   Dio dio = Dio();
+  final db = SqlHelper.db();
   static Map<String, dynamic> currentWeather = {};
   static List<dynamic> savedWeather = [];
   Future<Map<String, dynamic>> getWeatherDetails() async {
@@ -18,6 +20,11 @@ class WeatherRepository {
             'X-RapidAPI-Host': 'weather-by-api-ninjas.p.rapidapi.com'
           }));
       currentWeather = response.data;
+      print(response.data['temp']);
+      int id = await SqlHelper.saveWeatherTosqflite(
+          response.data['temp'].toDouble(), response.data['wind_speed'].toDouble());
+      print("${id}of saved entry");
+
       return response.data;
     } catch (e) {
       print(e);

@@ -10,7 +10,7 @@ class AuthRepo {
     Dio dio = Dio();
     dio.interceptors.add(PrettyDioLogger());
     try {
-      final Response response = await dio.get(
+      final Response response = await dio.post(
         "$baseUrl/user/login",
         options: Options(headers: {
           'Content-Type': 'application/json',

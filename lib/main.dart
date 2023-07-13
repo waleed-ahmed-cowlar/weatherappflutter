@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:weatherapp/Presentation/Auth_screens/login_Screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

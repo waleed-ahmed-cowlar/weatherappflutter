@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:weatherapp/Presentation/Weather_screens/save_weather_screen.dart';
+import 'package:weatherapp/Presentation/mqtt/mqtt_screen.dart';
 import 'package:weatherapp/data/repos/weather_repo.dart';
 
 import '../../Logic/blocs/weather_/bloc/weather_bloc.dart';
+import '../mqtt/mqqt_subscriber.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -19,6 +21,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void initState() {
     weatherBloc.add(FetchWeatherEvent());
     super.initState();
+    // mqtt_subcriber.mqtt_message_listener();
   }
 
   @override
@@ -86,7 +89,76 @@ class _WeatherScreenState extends State<WeatherScreen> {
           if (state is WeatherLoadingState) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is WeatherErrorState) {
-            return Center(child: Text(state.message));
+            // return Center(child: Text(state.message));
+            return SizedBox(
+              height: Get.height,
+              child: Column(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'failed to get weather Data from api \nshowing locally saved data',
+                          style: TextStyle(color: Colors.red),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                          onPressed: () {
+                            weatherBloc.add(FetchWeatherEvent());
+                          },
+                          icon: const Icon(Icons.replay_outlined)),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: state.locallySavedWeather.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Temperature: ${state.locallySavedWeather[index]['temperature']} C°',
+                                  style: const TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                    'Wind Speed: ${state.locallySavedWeather[index]['wind_speed']} Km/h'),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                const Icon(
+                                  Icons.waves,
+                                  size: 40,
+                                )
+                              ],
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
           } else if (state is WeatherLoadedState) {
             return Column(
               children: [
@@ -151,7 +223,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         },
                         child: const Text('Show Saved Data '))
                   ],
-                )
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      // MQTTClientManager m1 = MQTTClientManager();
+                      // await m1.connect();
+                      Get.to(() => MQTTScreen());
+                    },
+                    child: const Text('MQTT Data Screen'))
               ],
             );
           } else {

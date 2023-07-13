@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:weatherapp/data/local_db/sql_helper.dart';
 import 'package:weatherapp/data/repos/weather_repo.dart';
 
 part 'weather_event.dart';
@@ -20,7 +21,11 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         // await Future.delayed(const Duration(seconds: 5));
         emit(WeatherLoadedState(weatherModel: weatherDetails));
       } catch (e) {
-        emit(WeatherErrorState(message: e.toString()));
+        List<Map<String, dynamic>> locallySavedSWeather =
+            await SqlHelper.getSavedWeatherFromSqflite();
+        print(locallySavedSWeather);
+        emit(WeatherErrorState(
+            message: e.toString(), locallySavedWeather: locallySavedSWeather));
       }
     });
     on<SaveWeatherEvent>((event, emit) async {

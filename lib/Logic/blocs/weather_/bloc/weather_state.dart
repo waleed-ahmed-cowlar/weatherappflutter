@@ -41,5 +41,9 @@ class FetchingSavedWeatherErrorState extends WeatherState {
 
 class WeatherErrorState extends WeatherState {
   final String message;
-  WeatherErrorState({required this.message});
+  final List<Map<String, dynamic>> locallySavedWeather;
+  WeatherErrorState({
+    required this.locallySavedWeather,
+    required this.message,
+  });
 }
