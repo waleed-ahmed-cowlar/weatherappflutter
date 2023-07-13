@@ -53,16 +53,20 @@ class _MQTTScreenState extends State<MQTTScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("MQQT data Screen")),
-      body: Center(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text("${weatherData['location']['localtime']}"),
-          Text("${weatherData['current']['temp_c']} C"),
-          Text("${weatherData['current']['last_updated']}"),
-          Text(count.toString())
-        ],
-      )),
+      body: weatherData.isEmpty
+          ? const Center(
+              child: Text('no data fetched yet'),
+            )
+          : Center(
+              child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("${weatherData['location']['localtime']}"),
+                Text("${weatherData['current']['temp_c']} C"),
+                Text("${weatherData['current']['last_updated']}"),
+                Text(count.toString())
+              ],
+            )),
     );
   }
 }
