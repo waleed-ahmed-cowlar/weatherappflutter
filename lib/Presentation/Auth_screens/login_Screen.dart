@@ -83,8 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 20,
                 ),
                 BlocConsumer<AuthBloc, AuthState>(
-                  listenWhen: (previous, current) =>
-                      current is AuthSuccessState,
+                  listenWhen: (previous, current) => current is AuthState,
                   listener: (context, state) {
                     if (state is AuthLoginfailedState) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -97,8 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   builder: (context, state) {
                     if (state is AuthloadingState) {
                       return const CircularProgressIndicator();
-                    } else if (state is AuthErrorState) {
-                      return Text(state.message);
                     }
                     return ElevatedButton(
                         onPressed: () {

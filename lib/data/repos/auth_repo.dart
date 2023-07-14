@@ -27,7 +27,7 @@ class AuthRepo {
       }
     } catch (e) {
       print(e);
-      rethrow;
+      return false;
     }
   }
 }
