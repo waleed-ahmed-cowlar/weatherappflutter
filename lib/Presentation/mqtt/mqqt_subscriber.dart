@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:weatherapp/Logic/blocs/bloc/mqtt_bloc.dart';
 
 class MQTTClientManager {
   MqttServerClient client =
@@ -25,17 +27,19 @@ class MQTTClientManager {
       client.subscribe(topic, MqttQos.atMostOnce);
 
 // Register the message handler
-      // client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
-      //   final MqttPublishMessage recMess =
-      //       messages[0].payload as MqttPublishMessage;
-      //   var message =
-      //       MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
+        final MqttPublishMessage recMess =
+            messages[0].payload as MqttPublishMessage;
+        var message =
+            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        var jsonmessage = jsonDecode(message);
+        mqttBloc.add(loadedMQTTevent(weatherData: jsonmessage));
+        print('YOU GOT A NEW MESSAGE:>>>>>>>');
+        print(mqttBloc.state);
 
-      //   // print('YOU GOT A NEW MESSAGE:');
-
-      //   // print(jsonDecode(message)['message']);
-      //   // print(message);
-      // });
+        // print(jsonDecode(message)['message']);
+        // print(message);
+      });
     } on NoConnectionException catch (e) {
       print('MQTTClient::Client exception - $e');
       client.disconnect();
