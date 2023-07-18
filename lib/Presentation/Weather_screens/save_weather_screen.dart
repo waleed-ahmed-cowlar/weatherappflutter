@@ -24,40 +24,44 @@ class _SaveWeatherScreenState extends State<SaveWeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<WeatherBloc, WeatherState>(
-        bloc: weatherBloc,
-        builder: (context, state) {
-          if (state is FetchingSavedWeatherState) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is FetchingSavedWeatherErrorState) {
-            return const Center(child: Text("Error"));
-          }
-          return ListView.builder(
-            itemCount: WeatherRepository.savedWeather.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title:
-                    Text("${WeatherRepository.savedWeather[index]['temp']}°C"),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(DateFormat('dd/MM/yy  HH:mm:ss').format(DateTime.parse(
-                        "${WeatherRepository.savedWeather[index]['date']}"))),
-                    // Text("${WeatherRepository.savedWeather[index]['date']}"),
-                    Text(
-                        "${WeatherRepository.savedWeather[index]['wind_speed']} km/h"),
-                  ],
-                ),
-                trailing: IconButton(
-                  onPressed: () {
-                    // weatherBloc.add(DeleteWeatherEvent(index: index));
-                  },
-                  icon: const Icon(Icons.delete),
-                ),
-              );
-            },
-          );
-        },
+      appBar: AppBar(title: const Text("Saved Weather Details")),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: BlocBuilder<WeatherBloc, WeatherState>(
+          bloc: weatherBloc,
+          builder: (context, state) {
+            if (state is FetchingSavedWeatherState) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is FetchingSavedWeatherErrorState) {
+              return const Center(child: Text("Error"));
+            }
+            return ListView.builder(
+              itemCount: WeatherRepository.savedWeather.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(
+                      "${WeatherRepository.savedWeather[index]['temp']}°C"),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(DateFormat('dd/MM/yy  HH:mm:ss').format(DateTime.parse(
+                          "${WeatherRepository.savedWeather[index]['date']}"))),
+                      // Text("${WeatherRepository.savedWeather[index]['date']}"),
+                      Text(
+                          "${WeatherRepository.savedWeather[index]['wind_speed']} km/h"),
+                    ],
+                  ),
+                  // trailing: IconButton(
+                  //   onPressed: () {
+                  //     // weatherBloc.add(DeleteWeatherEvent(index: index));
+                  //   },
+                  //   icon: const Icon(Icons.delete),
+                  // ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

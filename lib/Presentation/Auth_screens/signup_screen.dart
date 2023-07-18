@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:weatherapp/Presentation/Auth_screens/login_Screen.dart';
+import 'package:weatherapp/data/repos/auth_repo.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -81,6 +82,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    obscureText: true,
                     controller: passController,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -100,6 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    obscureText: true,
                     controller: confirmPassController,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -120,10 +123,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')));
+                      bool isSuccess = await AuthRepo().createAccount(
+                          nameController.text,
+                          emailController.text,
+                          passController.text);
+                      if (isSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('account created')));
+                        Get.to(const LoginScreen());
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('failed to create account')));
+                      }
                       // Navigator.push(
                       //     context,
                       //     MaterialPageRoute(
