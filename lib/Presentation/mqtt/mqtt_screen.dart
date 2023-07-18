@@ -66,7 +66,7 @@ class _MQTTScreenState extends State<MQTTScreen> {
                 Text("${state.weatherData['location']['localtime']}"),
                 Text("${state.weatherData['current']['temp_c']} C"),
                 Text("${state.weatherData['current']['last_updated']}"),
-                Text(count.toString())
+                // Text(count.toString())
               ],
             );
           } else {
